@@ -24,7 +24,7 @@ export const ContactContent: React.FC = () => (
       </a>
     </p>
     <p className="game-modal-contact-line game-modal-contact-links">
-      {CONTACT.socials.map(({ platform, label, url }, i) => (
+      {CONTACT.socials.map(({ platform, label, url }) => (
         <span key={platform}>
           <span className="game-modal-contact-platform">{platform}:</span>{' '}
           <a
