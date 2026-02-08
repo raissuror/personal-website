@@ -19,7 +19,7 @@ export const GameUI: React.FC = () => {
           <span>Alternative movement</span>
         </div>
         <div className="flex items-center gap-1 sm:gap-0 sm:space-x-2">
-          <span className="text-game-accent shrink-0">E / SPACE</span>
+          <span className="text-game-accent shrink-0">SPACE</span>
           <span className="sm:inline">Interact</span>
         </div>
       </div>
