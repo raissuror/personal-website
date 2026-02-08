@@ -1,0 +1,25 @@
+/* App-specific styles */
+.App {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Game container fills viewport so canvas can be full height */
+.App > .game-container {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+} 

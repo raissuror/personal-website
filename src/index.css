@@ -1,0 +1,381 @@
+@import 'tailwindcss';
+@config "../tailwind.config.js";
+
+/* Custom game styles */
+@layer base {
+  :root {
+    --color-game-bg: #2c3e50;
+    --color-game-ui: #34495e;
+    --color-game-accent: #3498db;
+  }
+  
+  body {
+    margin: 0;
+    font-family: 'Inter', 'Helvetica', 'Arial', 'sans-serif';
+    background-color: #fafafa;
+    color: #212022;
+    overflow: hidden;
+  }
+  
+  /* Ensure pixel font is loaded for Phaser */
+  .phaser-pixel-font {
+    font-family: 'Press Start 2P', monospace;
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+@layer components {
+  .game-container {
+    @apply w-full flex items-center justify-center;
+    position: relative;
+    min-height: 100vh;
+    height: 100%;
+    background-color: var(--color-game-bg);
+  }
+
+  /* Canvas fills container so it's full screen height; Phaser scale FIT fits inside */
+  .game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  .game-canvas canvas {
+    display: block;
+    z-index: 0;
+  }
+  
+  .game-ui {
+    @apply absolute top-4 left-4 p-4 rounded-lg text-white;
+    background-color: rgba(52, 73, 94, 0.8);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    line-height: 1.5;
+    max-width: min(calc(100vw - 2rem), 320px);
+  }
+
+  /* Mobile only: compact panel */
+  @media (max-width: 639px) {
+    .game-ui.game-ui--compact {
+      padding: 6px 8px;
+      border-radius: 6px;
+      max-width: 200px;
+      font-size: 5px;
+      line-height: 1.4;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .game-ui {
+      max-width: 320px;
+    }
+  }
+
+  /* Mobile controls: overlay on top of canvas, bottom corners + safe area */
+  .mobile-controls {
+    touch-action: none;
+    z-index: 10;
+  }
+  .mobile-controls .joystick-base {
+    left: max(12px, env(safe-area-inset-left));
+    bottom: max(14px, env(safe-area-inset-bottom));
+  }
+  .mobile-controls .interact-button {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+  }
+
+  @media (max-width: 380px) {
+    .mobile-controls .joystick-base {
+      transform: scale(0.9);
+      transform-origin: bottom left;
+    }
+    .mobile-controls .interact-button {
+      width: 52px;
+      height: 52px;
+      font-size: 8px;
+    }
+  }
+  
+  .modal-overlay {
+    @apply fixed inset-0 flex items-center justify-center z-50;
+    background-color: rgba(0, 0, 0, 0.7); /* darker overlay for game feel */
+  }
+
+  /* Step 1: in-game dialogue at bottom (lighter overlay, box anchored to bottom) */
+  .modal-overlay-dialogue {
+    align-items: flex-end;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .game-dialog-inline {
+    @apply w-full max-w-4xl flex flex-row items-stretch gap-0 z-50;
+    background: linear-gradient(to bottom, #2c3e50 0%, #1a252f 100%);
+    border: 4px solid #fff;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.6);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    line-height: 1.8;
+    color: #fff;
+    padding: 0;
+    min-height: 120px;
+  }
+
+  .game-dialog-inline-portrait {
+    width: 120px;
+    min-width: 120px;
+    height: 120px;
+    overflow: hidden;
+    border-right: 4px solid #34495e;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+  }
+
+  .game-dialog-inline-portrait .game-character-sprite {
+    width: 128px;
+    height: 32px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    transform: scale(3.75);
+    transform-origin: top left;
+  }
+
+  .game-dialog-inline-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px 16px;
+    min-width: 0;
+  }
+
+  .game-dialog-inline-message {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: left;
+  }
+
+  .game-dialog-continue {
+    align-self: flex-end;
+    margin-top: 8px;
+    padding: 8px 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: #3498db;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid #34495e;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .game-dialog-continue:hover {
+    background: rgba(52, 152, 219, 0.2);
+    border-color: #3498db;
+  }
+  
+  .game-dialog-box {
+    @apply max-w-2xl w-full mx-4;
+    background: linear-gradient(to bottom, #2c3e50 0%, #1a252f 100%);
+    border: 4px solid #34495e;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(52, 152, 219, 0.1);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    line-height: 1.8;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .game-dialog-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #3498db, transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  
+  .game-dialog-content {
+    @apply p-6;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .game-dialog-message {
+    @apply flex-1 mb-4;
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: left;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid #34495e;
+    border-radius: 4px;
+    min-height: 120px;
+  }
+
+  .game-dialog-message-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    list-style-type: disc;
+  }
+
+  .game-dialog-message-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .game-dialog-message-list li:last-child {
+    margin-bottom: 0;
+  }
+  
+  .game-dialog-footer {
+    @apply flex items-end justify-between;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 2px solid #34495e;
+  }
+  
+  .game-dialog-character {
+    @apply flex items-center space-x-3;
+  }
+  
+  .game-character-sprite-wrapper {
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    border: 2px solid #34495e;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+  
+  .game-character-sprite {
+    width: 128px; /* Full spritesheet width (4 frames * 32px) */
+    height: 32px; /* Spritesheet height */
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    transform: scale(2); /* Scale up to 64x64 for first frame */
+    transform-origin: top left;
+    /* Show only the first 32x32 frame (scaled to 64x64) */
+  }
+  
+  .game-character-name {
+    font-size: 8px;
+    color: #3498db;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+  }
+  
+  .game-dialog-close {
+    font-size: 7px;
+    color: #95a5a6;
+    background: transparent;
+    border: 2px solid #34495e;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Press Start 2P', monospace;
+  }
+  
+  .game-dialog-close:hover {
+    color: #ffffff;
+    border-color: #3498db;
+    background: rgba(52, 152, 219, 0.2);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+  }
+  
+  .game-dialog-close:active {
+    transform: scale(0.95);
+  }
+  
+  /* Legacy modal-content for backward compatibility */
+  .modal-content {
+    @apply p-6 rounded-lg max-w-md w-full mx-4 text-white;
+    background-color: var(--color-game-ui);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px; /* Pixel fonts need smaller base size */
+    line-height: 1.6;
+  }
+  
+  /* Adjust text sizes for pixel font (slightly larger on mobile for readability) */
+  .game-ui .text-xxs {
+    font-size: 6px;
+  }
+  
+  .game-ui .text-xs {
+    font-size: 7px;
+  }
+  
+  .game-ui .text-sm {
+    font-size: 8px;
+  }
+  
+  .game-ui .text-lg {
+    font-size: 9px;
+  }
+  
+  .game-ui .text-xl {
+    font-size: 11px;
+  }
+
+  @media (min-width: 640px) {
+    .game-ui .text-xxs {
+      font-size: 5px;
+    }
+    .game-ui .text-xs {
+      font-size: 6px;
+    }
+    .game-ui .text-sm {
+      font-size: 7px;
+    }
+    .game-ui .text-lg {
+      font-size: 8px;
+    }
+    .game-ui .text-xl {
+      font-size: 10px;
+    }
+  }
+  
+  .modal-content .text-xs {
+    font-size: 7px;
+  }
+  
+  .modal-content .text-sm {
+    font-size: 8px;
+  }
+  
+  .modal-content .text-lg {
+    font-size: 10px;
+  }
+  
+  .modal-content .text-xl {
+    font-size: 12px;
+  }
+}
