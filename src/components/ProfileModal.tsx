@@ -48,8 +48,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, step, onClos
   // Step 1: In-game dialogue at bottom (portrait left, short message right)
   if (step === 'dialogue') {
     return (
-      <div className="modal-overlay modal-overlay-dialogue" onClick={onClose}>
-        <div className="game-dialog-box game-dialog-inline" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-overlay modal-overlay-dialogue" onClick={onContinue}>
+        <div className="game-dialog-box game-dialog-inline" onClick={onContinue}>
           <div className="game-dialog-inline-portrait">
             <img
               src={`/assets/npcs/${character.sprite}-idle.png`}
