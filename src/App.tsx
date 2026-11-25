@@ -1,59 +1,78 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { GameCanvas } from './components/GameCanvas'
-import { GameUI } from './components/GameUI'
-import { ProfileModal } from './components/ProfileModal'
+import { Hud } from './components/Hud'
+import { DialogueBox, SectionModal } from './components/ProfileModal'
+import { WelcomeCard } from './components/WelcomeCard'
+import type { NpcId } from './game/npcs'
 import './App.css'
 
+type ModalState = { npc: NpcId; step: 'dialogue' | 'full' } | null
+
+const INTRO_SEEN_KEY = 'outpost:intro-seen'
+
+const introSeen = () => {
+  try {
+    return localStorage.getItem(INTRO_SEEN_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+const rememberIntroSeen = () => {
+  try {
+    localStorage.setItem(INTRO_SEEN_KEY, '1')
+  } catch {
+    // Private mode / blocked storage: the intro will just show again next visit.
+  }
+}
+
 function App() {
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
-    type: string;
-    title: string;
-    step: 'dialogue' | 'full';
-  }>({
-    isOpen: false,
-    type: '',
-    title: '',
-    step: 'dialogue'
-  })
+  const [modal, setModal] = useState<ModalState>(null)
+  const [introOpen, setIntroOpen] = useState(() => !introSeen())
+  const [met, setMet] = useState<ReadonlySet<NpcId>>(() => new Set())
 
-  const handleInteraction = (type: string, data: any) => {
-    setModalState({
-      isOpen: true,
-      type,
-      title: data.title,
-      step: 'dialogue'
-    })
-  }
+  const markMet = useCallback((npc: NpcId) => {
+    setMet((prev) => (prev.has(npc) ? prev : new Set(prev).add(npc)))
+  }, [])
 
-  const handleContinueToFullModal = () => {
-    setModalState(prev => ({
-      ...prev,
-      step: 'full'
-    }))
-  }
+  const handleTalk = useCallback(
+    (npc: NpcId) => {
+      markMet(npc)
+      setModal({ npc, step: 'dialogue' })
+    },
+    [markMet],
+  )
 
-  const closeModal = () => {
-    setModalState({
-      isOpen: false,
-      type: '',
-      title: '',
-      step: 'dialogue'
-    })
-  }
+  const openSection = useCallback(
+    (npc: NpcId) => {
+      markMet(npc)
+      setIntroOpen(false)
+      rememberIntroSeen()
+      setModal({ npc, step: 'full' })
+    },
+    [markMet],
+  )
+
+  const startExploring = useCallback(() => {
+    setIntroOpen(false)
+    rememberIntroSeen()
+  }, [])
+
+  const showIntro = useCallback(() => setIntroOpen(true), [])
+  const continueDialogue = useCallback(() => setModal((m) => (m ? { ...m, step: 'full' } : m)), [])
+  const closeModal = useCallback(() => setModal(null), [])
 
   return (
     <div className="App">
-      <GameCanvas onInteraction={handleInteraction} />
-      <GameUI />
-      <ProfileModal
-        isOpen={modalState.isOpen}
-        step={modalState.step}
-        onClose={closeModal}
-        onContinue={handleContinueToFullModal}
-        type={modalState.type}
-        title={modalState.title}
-      />
+      <GameCanvas onTalk={handleTalk} paused={modal !== null || introOpen} />
+      <Hud met={met} onOpenSection={openSection} onShowIntro={showIntro} />
+
+      {introOpen && <WelcomeCard onStart={startExploring} onOpenSection={openSection} />}
+
+      {modal?.step === 'dialogue' && (
+        <DialogueBox key={modal.npc} npc={modal.npc} onContinue={continueDialogue} onClose={closeModal} />
+      )}
+      {modal?.step === 'full' && <SectionModal npc={modal.npc} onClose={closeModal} onNavigate={openSection} />}
     </div>
   )
 }

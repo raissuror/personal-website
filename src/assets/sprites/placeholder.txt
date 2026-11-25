@@ -1,8 +1,0 @@
-This file ensures the sprites directory exists.
-Replace this with your actual PNG sprite files:
-- player_down.png
-- player_left.png  
-- player_right.png
-- player_up.png
-
-See README.md for detailed requirements. 

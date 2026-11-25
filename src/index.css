@@ -1,14 +1,32 @@
 @import 'tailwindcss';
 @config "../tailwind.config.js";
 
-/* Custom game styles */
+/* ==========================================================================
+   Tokens — palette sampled from the Outpost map
+   ========================================================================== */
+:root {
+  --snow: #f7f7ef;
+  --paper: #fffef8;
+  --frost: #e3eef0;
+  --ice: #b9d6de;
+  --ice-deep: #7ea8b8;
+  --sea: #3c6072;
+  --ink: #1d3340;
+  --ink-soft: #4f6b7a;
+  --ember: #e8894a;
+  --ember-deep: #b85d2c;
+  --ember-glow: rgba(232, 137, 74, 0.35);
+
+  --font-display: 'Press Start 2P', ui-monospace, monospace;
+  --font-body: 'Pixelify Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Notched "pixel" outline: four offset shadows leave the corners open. */
+  --frame: 0 -3px 0 0 var(--ink), 0 3px 0 0 var(--ink), -3px 0 0 0 var(--ink), 3px 0 0 0 var(--ink);
+  --frame-sm: 0 -2px 0 0 var(--ink), 0 2px 0 0 var(--ink), -2px 0 0 0 var(--ink), 2px 0 0 0 var(--ink);
+  --drop: 0 9px 0 0 rgba(13, 30, 40, 0.28);
+}
+
 @layer base {
-  :root {
-    --color-game-bg: #2c3e50;
-    --color-game-ui: #34495e;
-    --color-game-accent: #3498db;
-  }
-  
   html {
     height: 100%;
     overflow: hidden;
@@ -18,507 +36,629 @@
   body {
     margin: 0;
     height: 100%;
-    min-height: 100%;
-    overflow: hidden;
-    font-family: 'Inter', 'Helvetica', 'Arial', 'sans-serif';
-    background-color: #fafafa;
-    color: #212022;
     min-height: 100vh;
     min-height: 100dvh;
+    overflow: hidden;
+    font-family: var(--font-body);
+    background-color: var(--ink);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
   }
-  
-  /* Ensure pixel font is loaded for Phaser */
-  .phaser-pixel-font {
-    font-family: 'Press Start 2P', monospace;
-    position: absolute;
-    visibility: hidden;
-    opacity: 0;
+
+  :focus-visible {
+    outline: 3px solid var(--ember);
+    outline-offset: 4px;
   }
 }
 
 @layer components {
+  /* ------------------------------------------------------------------ canvas */
   .game-container {
-    @apply w-full flex items-center justify-center;
     position: relative;
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;
-    background-color: var(--color-game-bg);
-  }
-
-  /* Canvas fills container so it's full screen height; Phaser scale FIT fits inside */
-  .game-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     width: 100%;
     height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background-color: var(--sea);
+  }
+
+  .game-canvas {
+    position: absolute;
+    inset: 0;
     z-index: 0;
   }
   .game-canvas canvas {
     display: block;
-    z-index: 0;
-  }
-  
-  .game-ui {
-    @apply absolute top-4 left-4 p-4 rounded-lg text-white;
-    background-color: rgba(52, 73, 94, 0.8);
-    font-family: 'Press Start 2P', monospace;
-    font-size: 6px;
-    line-height: 1.5;
-    max-width: min(calc(100vw - 2rem), 320px);
   }
 
-  /* Mobile only: compact panel */
-  @media (max-width: 639px) {
-    .game-ui.game-ui--compact {
-      padding: 6px 8px;
-      border-radius: 6px;
-      max-width: 200px;
-      font-size: 5px;
-      line-height: 1.4;
-    }
-  }
-
-  @media (min-width: 640px) {
-    .game-ui {
-      max-width: 320px;
-    }
-  }
-
-  /* Mobile controls: overlay on top of canvas, bottom corners + safe area */
-  .mobile-controls {
-    touch-action: none;
-    z-index: 10;
-  }
-  .mobile-controls .joystick-base {
-    left: max(12px, env(safe-area-inset-left));
-    bottom: max(14px, env(safe-area-inset-bottom));
-  }
-  .mobile-controls .interact-button {
-    right: max(12px, env(safe-area-inset-right));
-    bottom: max(14px, env(safe-area-inset-bottom));
-  }
-
-  @media (max-width: 380px) {
-    .mobile-controls .joystick-base {
-      transform: scale(0.9);
-      transform-origin: bottom left;
-    }
-    .mobile-controls .interact-button {
-      width: 52px;
-      height: 52px;
-      font-size: 8px;
-    }
-  }
-  
-  .modal-overlay {
-    @apply fixed inset-0 flex items-center justify-center z-50;
-    background-color: rgba(0, 0, 0, 0.7); /* darker overlay for game feel */
-  }
-
-  /* Step 1: in-game dialogue at bottom (lighter overlay, box anchored to bottom) */
-  .modal-overlay-dialogue {
-    align-items: flex-end;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-
-  .game-dialog-inline {
-    @apply w-full max-w-4xl flex flex-row items-stretch gap-0 z-50;
-    background: linear-gradient(to bottom, #2c3e50 0%, #1a252f 100%);
-    border: 4px solid #fff;
-    border-bottom: none;
-    border-radius: 8px 8px 0 0;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.6);
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    line-height: 1.8;
-    color: #fff;
-    padding: 0;
-    min-height: 120px;
-  }
-
-  .game-dialog-inline-portrait {
-    width: 120px;
-    min-width: 120px;
-    height: 120px;
-    overflow: hidden;
-    border-right: 4px solid #34495e;
-    background: rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-shrink: 0;
-  }
-
-  .game-dialog-inline-portrait .game-character-sprite {
-    width: 128px;
-    height: 32px;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    transform: scale(3.75);
-    transform-origin: top left;
-  }
-
-  .game-dialog-inline-body {
-    flex: 1;
+  .game-status {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 12px 16px;
-    min-width: 0;
-  }
-
-  .game-dialog-inline-message {
-    flex: 1;
-    display: flex;
     align-items: center;
-    font-size: 12px;
-    line-height: 1.8;
-    text-align: left;
+    justify-content: center;
+    gap: 18px;
+    background: var(--sea);
+    color: var(--snow);
+    font-family: var(--font-display);
+    font-size: 10px;
+    text-align: center;
+    padding: 16px;
+  }
+  .game-status-flake {
+    font-size: 32px;
+    line-height: 1;
+    animation: flake-spin 1.6s steps(8) infinite;
+  }
+  @keyframes flake-spin {
+    to { transform: rotate(360deg); }
   }
 
-  .game-dialog-continue {
-    align-self: flex-end;
-    margin-top: 8px;
-    padding: 8px 12px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 6px;
-    color: #3498db;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid #34495e;
-    border-radius: 4px;
+  /* ---------------------------------------------------------------- primitives */
+  .px-panel {
+    background: var(--snow);
+    color: var(--ink);
+    box-shadow: var(--frame), var(--drop);
+  }
+
+  .px-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 14px 10px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    line-height: 1;
+    color: var(--ink);
+    background: var(--frost);
+    box-shadow: var(--frame-sm), 0 5px 0 0 rgba(13, 30, 40, 0.25);
     cursor: pointer;
     white-space: nowrap;
+    user-select: none;
+    transition: transform 60ms, background-color 120ms;
   }
+  .px-btn:hover { background: var(--ice); }
+  .px-btn:active { transform: translateY(2px); }
+  .px-btn--primary {
+    color: #fff8ec;
+    background: var(--ember);
+  }
+  .px-btn--primary:hover { background: var(--ember-deep); }
+  .px-btn--ghost {
+    background: transparent;
+    box-shadow: none;
+    color: var(--ink-soft);
+  }
+  .px-btn--ghost:hover { background: var(--frost); color: var(--ink); }
+  .px-btn--sm { padding: 8px 10px 7px; font-size: 8px; }
+  .px-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
 
-  .game-dialog-continue:hover {
-    background: rgba(52, 152, 219, 0.2);
-    border-color: #3498db;
-  }
-  
-  .game-dialog-box {
-    @apply max-w-2xl w-full mx-4;
-    background: linear-gradient(to bottom, #2c3e50 0%, #1a252f 100%);
-    border: 4px solid #34495e;
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(52, 152, 219, 0.1);
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    line-height: 1.8;
-    color: #ffffff;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .game-dialog-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(to right, transparent, #3498db, transparent);
-    animation: shimmer 2s infinite;
-  }
-  
-  @keyframes shimmer {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-  }
-  
-  .game-dialog-content {
-    @apply p-6;
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .game-dialog-message {
-    @apply flex-1 mb-4;
-    font-size: 12px;
-    line-height: 1.8;
-    text-align: left;
-    padding: 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid #34495e;
-    border-radius: 4px;
-    min-height: 120px;
-  }
-
-  .game-dialog-message-list {
-    margin: 0;
-    padding-left: 1.25rem;
-    list-style-type: disc;
-  }
-
-  .game-dialog-message-list li {
-    margin-bottom: 0.5rem;
-  }
-
-  .game-dialog-message-list li:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Modal content layout: sections, paragraphs, no lists */
-  .game-modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-height: min(70vh, 400px);
-    overflow-y: auto;
-  }
-
-  .game-modal-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .game-modal-section-title {
-    font-size: 10px;
-    color: #3498db;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .game-modal-paragraph {
-    margin: 0;
-    line-height: 1.75;
-  }
-
-  .game-modal-highlight {
-    color: #3498db;
-    font-weight: bold;
-  }
-
-  .game-modal-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 10px;
-    margin: 0;
-  }
-
-  .game-modal-tag {
+  .key {
     display: inline-block;
-    padding: 4px 8px;
-    background: rgba(52, 152, 219, 0.2);
-    border: 1px solid #3498db;
-    border-radius: 4px;
-    font-size: 10px;
+    min-width: 24px;
+    padding: 5px 6px 3px;
+    font-family: var(--font-display);
+    font-size: 8px;
+    line-height: 1;
+    text-align: center;
+    color: var(--ink);
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-bottom-width: 4px;
+    border-radius: 3px;
   }
+  .px-btn .key { min-width: 0; padding: 3px 4px 2px; font-size: 7px; border-bottom-width: 3px; }
+  .px-btn--primary .key { border-color: #7a3a17; color: var(--ember-deep); }
 
-  .game-modal-project {
-    padding: 8px 10px;
-    background: rgba(0, 0, 0, 0.2);
-    border-left: 3px solid #3498db;
-    border-radius: 0 4px 4px 0;
-    margin-bottom: 8px;
-  }
+  /* Symbols the pixel fonts don't include (❄ ▾ ▼ ↗ ✉) */
+  .glyph { font-family: ui-sans-serif, system-ui, 'Apple Symbols', 'Segoe UI Symbol', sans-serif; }
 
-  .game-modal-project:last-child {
-    margin-bottom: 0;
-  }
-
-  .game-modal-project-title {
-    font-size: 10px;
-    margin: 0 0 4px 0;
-  }
-
-  .game-modal-project-link {
-    color: #3498db;
-    text-decoration: none;
-  }
-
-  .game-modal-project-link:hover {
-    text-decoration: underline;
-  }
-
-  .game-modal-project-meta {
+  .eyebrow {
     margin: 0;
-    font-size: 11px;
-    line-height: 1.5;
-    color: #ecf0f1;
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    color: var(--ember-deep);
   }
 
-  .game-modal-project-lang {
-    color: #95a5a6;
+  /* 4-frame 32×32 strip shown one frame at a time. Set --s to a multiple of 32. */
+  .sprite {
+    --s: 32px;
+    display: inline-block;
+    flex: none;
+    width: var(--s);
+    height: var(--s);
+    background-repeat: no-repeat;
+    background-size: calc(var(--s) * 4) var(--s);
+    background-position: 0 0;
+    image-rendering: pixelated;
+  }
+  .sprite--anim { animation: sprite-idle 1s steps(4) infinite; }
+  @keyframes sprite-idle {
+    to { background-position: calc(var(--s) * -4) 0; }
   }
 
-  .game-modal-project-desc {
-    margin: 0;
-    font-size: 11px;
-    line-height: 1.5;
-    color: #ecf0f1;
-  }
-
-  .game-modal-contact-line {
-    margin: 0 0 0.5rem 0;
-  }
-
-  .game-modal-contact-line:last-child {
-    margin-bottom: 0;
-  }
-
-  .game-modal-contact-cta {
-    color: #3498db;
-    word-break: break-all;
-  }
-
-  .game-modal-contact-link {
-    color: #3498db;
-    word-break: break-all;
-    text-decoration: none;
-  }
-
-  .game-modal-contact-link:hover {
-    text-decoration: underline;
-  }
-
-  .game-modal-contact-links {
+  /* --------------------------------------------------------------------- HUD */
+  .hud {
+    position: absolute;
+    z-index: 30;
+    top: max(14px, env(safe-area-inset-top));
+    left: max(14px, env(safe-area-inset-left));
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0 0.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: calc(100vw - 28px);
   }
 
-  .game-modal-contact-sep {
-    color: #95a5a6;
+  .hud-chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px 9px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    line-height: 1;
+    color: var(--ink);
+    background: var(--snow);
+    box-shadow: var(--frame), var(--drop);
+    cursor: pointer;
+  }
+  .hud-chip:hover { background: var(--paper); }
+  .hud-chip-flake { font-size: 16px; line-height: 1; color: var(--sea); }
+  .hud-chip-caret { font-size: 14px; line-height: 1; color: var(--ink-soft); transition: transform 150ms; }
+  .hud-chip[aria-expanded='true'] .hud-chip-caret { transform: rotate(180deg); }
+
+  .hud-pips { display: flex; gap: 3px; }
+  .hud-pip {
+    width: 8px;
+    height: 8px;
+    background: var(--frost);
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  .hud-pip.is-met { background: var(--ember); }
+
+  .hud-panel {
+    width: 290px;
+    max-width: 100%;
+    padding: 16px 14px 12px;
+    animation: pop-in 160ms ease-out;
+  }
+  .hud-section + .hud-section {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 3px dotted var(--ice);
+  }
+  .hud-heading {
+    margin: 0 0 10px;
+    font-family: var(--font-display);
+    font-size: 7px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  .hud-controls {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px 12px;
+    margin: 0;
+    font-size: 16px;
+  }
+  .hud-controls dt { display: flex; gap: 4px; }
+  .hud-controls dd { margin: 0; }
+
+  .hud-npcs { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; list-style: none; }
+  .hud-npc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 4px 6px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .hud-npc:hover { background: var(--frost); }
+  .hud-npc-text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.15; }
+  .hud-npc-section { font-size: 17px; font-weight: 600; }
+  .hud-npc-name { font-size: 14px; color: var(--ink-soft); }
+  .hud-npc-badge {
+    font-family: var(--font-display);
+    font-size: 7px;
+    padding: 4px 5px 3px;
+    color: var(--ink-soft);
+  }
+  .hud-npc-badge.is-met { color: #fff8ec; background: var(--ember); }
+  .hud-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  /* ----------------------------------------------------------- talk prompt */
+  .talk-prompt {
+    position: absolute;
+    z-index: 20;
+    left: 50%;
+    bottom: max(32px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px 9px;
+    font-size: 18px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: prompt-in 160ms ease-out;
+  }
+  .talk-prompt strong { font-weight: 600; }
+  .talk-prompt-section { color: var(--ink-soft); }
+  @keyframes prompt-in {
+    from { opacity: 0; transform: translate(-50%, 6px); }
+  }
+
+  /* -------------------------------------------------------- touch controls */
+  .touch-controls {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    pointer-events: none;
+  }
+  .joystick {
+    position: absolute;
+    left: max(18px, env(safe-area-inset-left));
+    bottom: max(22px, env(safe-area-inset-bottom));
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    background: rgba(29, 51, 64, 0.42);
+    border: 3px solid rgba(247, 247, 239, 0.9);
+    pointer-events: auto;
+    touch-action: none;
     user-select: none;
   }
-
-  .game-modal-contact-platform {
-    color: #95a5a6;
+  .joystick-stick {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
+    border-radius: 50%;
+    background: var(--snow);
+    border: 3px solid var(--ink);
+    box-shadow: 0 4px 0 rgba(13, 30, 40, 0.35);
+    pointer-events: none;
+    transition: transform 150ms ease-out;
   }
-  
-  .game-dialog-footer {
-    @apply flex items-end justify-between;
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 2px solid #34495e;
-  }
-  
-  .game-dialog-character {
-    @apply flex items-center space-x-3;
-  }
-  
-  .game-character-sprite-wrapper {
-    width: 64px;
-    height: 64px;
-    overflow: hidden;
-    border: 2px solid #34495e;
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.3);
-    position: relative;
-  }
-  
-  .game-character-sprite {
-    width: 128px; /* Full spritesheet width (4 frames * 32px) */
-    height: 32px; /* Spritesheet height */
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    transform: scale(2); /* Scale up to 64x64 for first frame */
-    transform-origin: top left;
-    /* Show only the first 32x32 frame (scaled to 64x64) */
-  }
-  
-  .game-character-name {
-    font-size: 8px;
-    color: #3498db;
-    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
-    font-weight: bold;
-  }
-  
-  .game-dialog-close {
-    font-size: 7px;
-    color: #95a5a6;
-    background: transparent;
-    border: 2px solid #34495e;
-    border-radius: 4px;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Press Start 2P', monospace;
-  }
-  
-  .game-dialog-close:hover {
-    color: #ffffff;
-    border-color: #3498db;
-    background: rgba(52, 152, 219, 0.2);
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
-  }
-  
-  .game-dialog-close:active {
-    transform: scale(0.95);
-  }
-  
-  /* Legacy modal-content for backward compatibility */
-  .modal-content {
-    @apply p-6 rounded-lg max-w-md w-full mx-4 text-white;
-    background-color: var(--color-game-ui);
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px; /* Pixel fonts need smaller base size */
-    line-height: 1.6;
-  }
-  
-  /* Adjust text sizes for pixel font (slightly larger on mobile for readability) */
-  .game-ui .text-xxs {
-    font-size: 6px;
-  }
-  
-  .game-ui .text-xs {
-    font-size: 7px;
-  }
-  
-  .game-ui .text-sm {
-    font-size: 8px;
-  }
-  
-  .game-ui .text-lg {
+  .joystick.is-active .joystick-stick { transition: none; }
+  .talk-button {
+    position: absolute;
+    right: max(18px, env(safe-area-inset-right));
+    bottom: max(36px, env(safe-area-inset-bottom));
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    font-family: var(--font-display);
     font-size: 9px;
+    color: #fff8ec;
+    background: var(--ember);
+    border: 3px solid var(--ink);
+    box-shadow: 0 5px 0 var(--ink);
+    pointer-events: auto;
+    touch-action: manipulation;
+    user-select: none;
   }
-  
-  .game-ui .text-xl {
-    font-size: 11px;
+  .talk-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+
+  /* ------------------------------------------------------------- overlays */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(18, 36, 46, 0.6);
+    animation: fade-in 160ms ease-out;
+  }
+  @keyframes fade-in { from { opacity: 0; } }
+  @keyframes pop-in { from { opacity: 0; transform: translateY(6px) scale(0.98); } }
+
+  /* --------------------------------------------------------------- welcome */
+  .welcome {
+    width: min(540px, 100%);
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    padding: 28px 28px 22px;
+    text-align: center;
+    animation: pop-in 200ms ease-out;
+  }
+  .welcome-title {
+    margin: 12px 0 14px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.45;
+  }
+  .welcome-lede { margin: 0 auto; max-width: 420px; font-size: 20px; line-height: 1.4; }
+  .welcome-cast {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin: 22px 0 18px;
+  }
+  .welcome-cast-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 6px;
+    color: var(--ink-soft);
+  }
+  .welcome-cast-member .sprite { background-color: var(--frost); }
+  .welcome-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+    margin: 0 0 22px;
+    font-size: 16px;
+  }
+  .welcome-controls span { display: inline-flex; align-items: center; gap: 6px; }
+  .welcome-skip {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 3px dotted var(--ice);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .welcome-skip-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
   }
 
-  @media (min-width: 640px) {
-    .game-ui .text-xxs {
-      font-size: 5px;
-    }
-    .game-ui .text-xs {
-      font-size: 6px;
-    }
-    .game-ui .text-sm {
-      font-size: 7px;
-    }
-    .game-ui .text-lg {
-      font-size: 8px;
-    }
-    .game-ui .text-xl {
-      font-size: 10px;
-    }
+  /* -------------------------------------------------------------- dialogue */
+  .dialogue-overlay {
+    align-items: flex-end;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(18, 36, 46, 0.6), rgba(18, 36, 46, 0) 60%);
   }
-  
-  .modal-content .text-xs {
-    font-size: 7px;
+  .dialogue {
+    position: relative;
+    width: min(780px, 100%);
+    margin-top: 20px;
+    display: flex;
+    gap: 18px;
+    padding: 20px 18px 14px;
+    cursor: pointer;
+    animation: pop-in 180ms ease-out;
   }
-  
-  .modal-content .text-sm {
-    font-size: 8px;
+  .dialogue-name {
+    position: absolute;
+    top: -12px;
+    left: 14px;
+    padding: 7px 10px 6px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    color: var(--snow);
+    background: var(--ink);
   }
-  
-  .modal-content .text-lg {
-    font-size: 10px;
+  .dialogue-portrait {
+    flex: none;
+    align-self: flex-start;
+    /* background-color only: the `background` shorthand would reset the sprite's size/repeat */
+    background-color: var(--frost);
+    box-shadow: var(--frame-sm);
   }
-  
-  .modal-content .text-xl {
+  .dialogue-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .dialogue-text {
+    margin: 0;
+    min-height: 4.2em;
+    font-size: 21px;
+    line-height: 1.4;
+  }
+  .dialogue-cursor {
+    display: inline-block;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    margin-left: 6px;
     font-size: 12px;
+    color: var(--ember);
+    animation: blink 900ms steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .dialogue-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  /* --------------------------------------------------------- section modal */
+  .section {
+    width: min(700px, 100%);
+    max-height: min(760px, calc(100dvh - 32px));
+    display: flex;
+    flex-direction: column;
+    animation: pop-in 200ms ease-out;
+  }
+  /* Focused programmatically so keyboard users land inside; no ring on the whole card. */
+  .section:focus { outline: none; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    color: var(--snow);
+    background: var(--ink);
+  }
+  .section-header .sprite { background-color: var(--sea); }
+  .section-heading { flex: 1; min-width: 0; }
+  .section-kicker {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: var(--ice);
+  }
+  .section-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.3;
+  }
+  .section-close {
+    flex: none;
+    align-self: flex-start;
+    width: 36px;
+    height: 36px;
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--snow);
+    cursor: pointer;
+  }
+  .section-close:hover { background: var(--ember); color: #fff8ec; }
+  .section-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 22px 24px;
+    font-size: 19px;
+    line-height: 1.5;
+    background: var(--paper);
+  }
+  .section-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-top: 3px solid var(--frost);
+  }
+  .section-hint { font-size: 14px; color: var(--ink-soft); }
+
+  /* ------------------------------------------------------- section content */
+  .game-modal-body { display: flex; flex-direction: column; gap: 18px; }
+  .game-modal-paragraph { margin: 0; }
+  .game-modal-highlight {
+    font-weight: 600;
+    background: linear-gradient(transparent 58%, var(--ember-glow) 0);
+  }
+
+  .game-modal-section { display: flex; flex-direction: column; gap: 10px; }
+  .game-modal-section-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+  .game-modal-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+  .game-modal-tag {
+    padding: 4px 10px 3px;
+    font-size: 17px;
+    font-weight: 500;
+    background: var(--frost);
+    box-shadow: var(--frame-sm);
+  }
+
+  .game-modal-projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .game-modal-project {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px 12px;
+    background: var(--snow);
+    box-shadow: var(--frame-sm);
+  }
+  .game-modal-project-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  .game-modal-project-desc { margin: 0; flex: 1; font-size: 17px; line-height: 1.45; }
+  .game-modal-link {
+    align-self: flex-start;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ember-deep);
+    text-decoration: none;
+  }
+  .game-modal-link:hover { text-decoration: underline; }
+
+  .game-modal-contacts { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .game-modal-contact {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px 10px 10px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--snow);
+    box-shadow: var(--frame-sm);
+    transition: transform 80ms, background-color 120ms;
+  }
+  .game-modal-contact:hover { background: var(--frost); transform: translateX(3px); }
+  .game-modal-contact-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    color: var(--snow);
+    background: var(--ink);
+  }
+  .game-modal-contact-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .game-modal-contact-platform {
+    font-family: var(--font-display);
+    font-size: 7px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  .game-modal-contact-value { font-size: 18px; font-weight: 600; overflow-wrap: anywhere; }
+  
+  .game-modal-contact-arrow { font-family: ui-sans-serif, system-ui, sans-serif; color: var(--ember-deep); font-size: 18px; }
+
+  /* ---------------------------------------------------------------- mobile */
+  @media (max-width: 640px) {
+    .hud-panel { width: 260px; }
+    .talk-prompt { bottom: 158px; font-size: 16px; }
+    .welcome { padding: 22px 18px 18px; }
+    .welcome-title { font-size: 14px; }
+    .welcome-lede { font-size: 18px; }
+    .welcome-cast { gap: 8px; }
+    .dialogue { gap: 12px; padding: 20px 12px 12px; }
+    .dialogue-portrait.sprite { --s: 64px !important; }
+    .dialogue-text { font-size: 18px; }
+    .dialogue-actions .key { display: none; }
+    .section-header .sprite { --s: 32px !important; }
+    .section-title { font-size: 12px; }
+    .section-body { padding: 18px 16px; font-size: 18px; }
+    .section-hint { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sprite--anim,
+    .game-status-flake,
+    .dialogue-cursor { animation: none; }
+    .overlay, .welcome, .dialogue, .section, .hud-panel, .talk-prompt { animation: none; }
   }
 }

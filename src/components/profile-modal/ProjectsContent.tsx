@@ -28,20 +28,22 @@ const PROJECTS = [
 
 export const ProjectsContent: React.FC = () => (
   <div className="game-modal-body">
-    {PROJECTS.map((p) => (
-      <div key={p.repo} className="game-modal-project">
-        <h3 className="game-modal-project-title">
+    <p className="game-modal-paragraph">A few things I've built. Each one links to its source on GitHub.</p>
+    <div className="game-modal-projects">
+      {PROJECTS.map((p) => (
+        <article key={p.repo} className="game-modal-project">
+          <h3 className="game-modal-project-title">{p.title}</h3>
+          <p className="game-modal-project-desc">{p.desc}</p>
           <a
             href={`https://github.com/${GITHUB_USERNAME}/${p.repo}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="game-modal-project-link"
+            className="game-modal-link"
           >
-            {p.title}
+            View on GitHub ↗
           </a>
-        </h3>
-        <p className="game-modal-project-desc">{p.desc}</p>
-      </div>
-    ))}
+        </article>
+      ))}
+    </div>
   </div>
 );

@@ -1,0 +1,128 @@
+{
+  "north-pole-campfire-loop": {
+    "url": "sprites/north-pole-campfire-loop.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 6,
+    "fps": 8
+  },
+  "north-pole-sled-dog-idle-left": {
+    "url": "sprites/north-pole-sled-dog-idle-left.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  },
+  "north-pole-arctic-fox-idle-left": {
+    "url": "sprites/north-pole-arctic-fox-idle-left.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  },
+  "north-pole-seal-idle-left": {
+    "url": "sprites/north-pole-seal-idle-left.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  },
+  "north-pole-husky-sled-team-left": {
+    "url": "sprites/north-pole-husky-sled-team-left.png",
+    "frameWidth": 128,
+    "frameHeight": 64,
+    "frames": 4,
+    "fps": 12
+  },
+  "north-pole-parka-walk-north": {
+    "url": "sprites/north-pole-parka-walk-north.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 8
+  },
+  "north-pole-parka-run-north": {
+    "url": "sprites/north-pole-parka-run-north.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 12
+  },
+  "north-pole-parka-walk-east": {
+    "url": "sprites/north-pole-parka-walk-east.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 8
+  },
+  "north-pole-parka-run-east": {
+    "url": "sprites/north-pole-parka-run-east.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 12
+  },
+  "north-pole-parka-walk-south": {
+    "url": "sprites/north-pole-parka-walk-south.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 8
+  },
+  "north-pole-parka-run-south": {
+    "url": "sprites/north-pole-parka-run-south.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 12
+  },
+  "north-pole-parka-walk-west": {
+    "url": "sprites/north-pole-parka-walk-west.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 8
+  },
+  "north-pole-parka-run-west": {
+    "url": "sprites/north-pole-parka-run-west.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 12
+  },
+  "north-pole-parka-idle-south": {
+    "url": "sprites/north-pole-parka-idle-south.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  },
+  "north-pole-penguin-idle-front": {
+    "url": "sprites/north-pole-penguin-idle-front.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  },
+  "north-pole-polar-bear-idle-front": {
+    "url": "sprites/north-pole-polar-bear-idle-front.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  },
+  "north-pole-reindeer-idle-left": {
+    "url": "sprites/north-pole-reindeer-idle-left.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  },
+  "north-pole-snowy-owl-perched-front": {
+    "url": "sprites/north-pole-snowy-owl-perched-front.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "fps": 4
+  }
+}

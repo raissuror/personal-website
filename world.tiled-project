@@ -1,0 +1,9 @@
+{
+  "folders": [
+    "public/assets/world/maps",
+    "public/assets/world/tilesets"
+  ],
+  "commands": [],
+  "extensionsPath": "extensions",
+  "objectTypesFile": ""
+}

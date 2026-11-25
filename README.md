@@ -21,7 +21,7 @@ A Pokémon-style interactive portfolio website built with React, TypeScript, and
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/raissuror/personal-website.git
 cd profile-website-game
 ```
 
@@ -40,60 +40,68 @@ npm run dev
 ## 🎯 How to Play
 
 ### Controls
-- **Movement**: Use arrow keys or WASD to move your character
-- **Interact**: Press Space or Enter when near an NPC to open their profile section
+- **Move**: WASD or arrow keys (joystick on mobile)
+- **Run**: hold Shift (push the joystick to the edge on mobile)
+- **Talk**: E, Space or Enter when next to an NPC (the **E** button on mobile)
+- **Close a section**: Escape, E, or click outside
+- **F2**: show collision boxes and talk radii (handy after editing the map)
 
-### Game Elements
-- **Blue Character**: Your player character
-- **Red NPC**: About Me section
-- **Yellow NPC**: Skills & Technologies
-- **Purple NPC**: Projects showcase
-- **Teal NPC**: Contact information
+### Who to find (around the campfire)
+- **Penguin**: About me
+- **Polar Bear**: Skills
+- **Reindeer**: Projects
+- **Snowy Owl**: Contact
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18 + TypeScript
+- **Frontend**: React 19 + TypeScript
 - **Game Engine**: Phaser 3
+- **Maps**: Tiled (JSON `.tmj` with external `.tsj` tilesets)
 - **Styling**: Tailwind CSS
 - **Build Tool**: Vite
-- **Package Manager**: npm
 
 ## 📁 Project Structure
 
 ```
+public/assets/world/        # Everything the game world loads at runtime
+├── maps/outpost.tmj        # The Tiled map (edit this)
+├── tilesets/               # ground.tsj (16px atlas) + props.tsj (image collection)
+├── sprites/                # Player, NPC, animal and prop PNGs
+└── animations.json         # Spritesheet frame size / count / fps per animation
+world.tiled-project         # Open this in Tiled
 src/
-├── components/          # React components
-│   ├── GameCanvas.tsx   # Phaser game integration
-│   ├── GameUI.tsx       # Game instructions overlay
-│   └── ProfileModal.tsx # Profile content modal
-├── game/
-│   └── scenes/
-│       └── GameScene.tsx # Main game scene
-├── assets/              # Game assets (sprites, sounds)
-└── App.tsx              # Main application component
+├── App.tsx                 # Modal state; pauses the game while a section is open
+├── components/
+│   ├── GameCanvas.tsx      # Creates the Phaser game, talk prompt, mobile controls
+│   ├── GameUI.tsx          # Controls + "who to find" overlay
+│   ├── ProfileModal.tsx    # Dialogue step → full section
+│   └── profile-modal/      # About / Skills / Projects / Contact content
+└── game/
+    ├── npcs.ts             # NPC names, sections, sprites and teaser lines
+    ├── world.ts            # Loads the .tmj and its external tilesets
+    ├── bridge.ts           # React ↔ Phaser events and registry keys
+    └── WorldScene.ts       # The Phaser scene
 ```
+
+## 🗺️ Editing the map in Tiled
+
+Open `world.tiled-project` in Tiled, then `public/assets/world/maps/outpost.tmj`. Save as JSON and refresh the browser.
+
+| Layer | Purpose |
+| --- | --- |
+| Ground | 16px tile layer |
+| Scenery | Prop tile objects (bottom-left anchor). Add an `animation` property to play an entry from `animations.json` |
+| Spawns | Point named `player` (the player's feet) |
+| Collision | Rectangles the player can't walk through (hidden in Tiled by default) |
+| NPCs | Points of type `npc` named `about`, `skills`, `projects` or `contact` (the NPC's feet) |
+
+Moving a prop does **not** move its collision rectangle. Move both together. Only rectangle colliders are supported.
 
 ## 🎨 Customization
 
-### Adding New Profile Sections
-
-1. Update the `createNPCs()` method in `GameScene.tsx`
-2. Add new content in the `getContent()` method in `ProfileModal.tsx`
-3. Update the NPC data array in `createInteractionZones()`
-
-### Styling
-
-The project uses Tailwind CSS with custom game-themed colors:
-- `game-bg`: Background color
-- `game-ui`: UI elements
-- `game-accent`: Accent color for highlights
-
-### Assets
-
-Replace placeholder sprites in the `assets/` directory:
-- `sprites/`: Character and NPC sprites
-- `tilesets/`: World tiles and decorations
-- `sounds/`: Background music and sound effects
+- **NPC text, names and sprites**: `src/game/npcs.ts`
+- **Section content**: `src/components/profile-modal/*Content.tsx`
+- **Add a section**: add an entry to `NPCS` in `npcs.ts`, a content component in `profile-modal/index.ts`, and an `npc` point with that name on the map's `NPCs` layer.
 
 ## 🚀 Deployment
 

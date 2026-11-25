@@ -1,42 +1,38 @@
 import React from 'react';
 
 /** Replace with your contact details and social profile URLs */
-const CONTACT = {
-  email: {
-    platform: 'Email',
-    label: 'raissuror@gmail.com',
-  },
-  socials: [
-    { platform: 'LinkedIn', label: 'Muhammad Rais Sabilullah', url: 'https://www.linkedin.com/in/muhammad-rais-sabilullah/' },
-    { platform: 'GitHub', label: 'raissuror', url: 'https://github.com/raissuror' },
-  ] as const,
-};
+const CONTACTS = [
+  { platform: 'EMAIL', icon: '@', label: 'raissabilullah@gmail.com', url: 'mailto:raissabilullah@gmail.com' },
+  { platform: 'LINKEDIN', icon: 'in', label: 'Muhammad Rais Sabilullah', url: 'https://www.linkedin.com/in/muhammad-rais-sabilullah/' },
+  { platform: 'GITHUB', icon: 'GH', label: 'raissuror', url: 'https://github.com/raissuror' },
+];
 
 export const ContactContent: React.FC = () => (
   <div className="game-modal-body">
-    <p className="game-modal-paragraph game-modal-contact-line">
-      I'm always interested in new opportunities — freelance projects, full-time positions, and open source contributions.
+    <p className="game-modal-paragraph">
+      I'm always interested in new opportunities: freelance projects, full-time positions, and open source
+      contributions. Pick whichever channel suits you.
     </p>
-    <p className="game-modal-contact-line">
-      <span className="game-modal-contact-platform">{CONTACT.email.platform}:</span>{' '}
-      <a href={`mailto:${CONTACT.email.label}`} className="game-modal-contact-link">
-        {CONTACT.email.label}
-      </a>
-    </p>
-    <p className="game-modal-contact-line game-modal-contact-links">
-      {CONTACT.socials.map(({ platform, label, url }) => (
-        <span key={platform}>
-          <span className="game-modal-contact-platform">{platform}:</span>{' '}
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="game-modal-contact-link"
-          >
-            {label}
-          </a>
-        </span>
-      ))}
-    </p>
+    <ul className="game-modal-contacts">
+      {CONTACTS.map(({ platform, icon, label, url }) => {
+        const external = !url.startsWith('mailto:');
+        return (
+          <li key={platform}>
+            <a
+              href={url}
+              className="game-modal-contact"
+              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              <span className="game-modal-contact-icon" aria-hidden>{icon}</span>
+              <span className="game-modal-contact-text">
+                <span className="game-modal-contact-platform">{platform}</span>
+                <span className="game-modal-contact-value">{label}</span>
+              </span>
+              <span className="game-modal-contact-arrow" aria-hidden>{external ? '↗' : '✉'}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
   </div>
 );
