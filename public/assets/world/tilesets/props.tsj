@@ -1,0 +1,389 @@
+{
+  "type": "tileset",
+  "version": "1.10",
+  "name": "Outpost Props",
+  "tilewidth": 128,
+  "tileheight": 96,
+  "tilecount": 29,
+  "columns": 0,
+  "objectalignment": "bottomleft",
+  "tiles": [
+    {
+      "id": 0,
+      "image": "../sprites/prop-000.png",
+      "imagewidth": 96,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-snow-dune-96.png"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "image": "../sprites/prop-001.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-prop.png"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "image": "../sprites/prop-002.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-wood-clutter.png"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "image": "../sprites/prop-003.png",
+      "imagewidth": 64,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-research-hut.png"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "image": "../sprites/prop-004.png",
+      "imagewidth": 32,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-research-equipment.png"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "image": "../sprites/prop-005.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-research-equipment.png"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "image": "../sprites/prop-006.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-wood-clutter.png"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "image": "../sprites/prop-007.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-wood-clutter.png"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "image": "../sprites/prop-008.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-fishing-camp.png"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "image": "../sprites/prop-009.png",
+      "imagewidth": 64,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-supply-shed.png"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "image": "../sprites/prop-010.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-camp-clutter.png"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "image": "../sprites/prop-011.png",
+      "imagewidth": 16,
+      "imageheight": 16,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-items-supplies.png"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "image": "../sprites/prop-012.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-fences.png"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "image": "../sprites/prop-013.png",
+      "imagewidth": 64,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-tent.png"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "image": "../sprites/prop-014.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-campfire-loop.png"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "image": "../sprites/prop-015.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-sled-dog-idle-left.png"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "image": "../sprites/prop-016.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-wood-clutter.png"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "image": "../sprites/prop-017.png",
+      "imagewidth": 64,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-plank-bridge-final.png"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "image": "../sprites/prop-018.png",
+      "imagewidth": 64,
+      "imageheight": 96,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-lighthouse.png"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "image": "../sprites/prop-019.png",
+      "imagewidth": 64,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-fishing-camp.png"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "image": "../sprites/prop-020.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-camp-clutter.png"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "image": "../sprites/prop-021.png",
+      "imagewidth": 96,
+      "imageheight": 96,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-ice-cave-96.png"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "image": "../sprites/prop-022.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-arctic-fox-idle-left.png"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "image": "../sprites/prop-023.png",
+      "imagewidth": 64,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-igloo-intact.png"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "image": "../sprites/prop-024.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-prop.png"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "image": "../sprites/prop-025.png",
+      "imagewidth": 32,
+      "imageheight": 32,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-seal-idle-left.png"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "image": "../sprites/prop-026.png",
+      "imagewidth": 64,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-dock.png"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "image": "../sprites/prop-027.png",
+      "imagewidth": 128,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-husky-sled-team-left.png"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "image": "../sprites/prop-028.png",
+      "imagewidth": 64,
+      "imageheight": 64,
+      "properties": [
+        {
+          "name": "source",
+          "type": "string",
+          "value": "north-pole-wreckage.png"
+        }
+      ]
+    }
+  ]
+}

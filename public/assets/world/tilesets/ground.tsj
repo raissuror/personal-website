@@ -1,0 +1,14 @@
+{
+  "type": "tileset",
+  "version": "1.10",
+  "name": "Outpost Ground",
+  "tilewidth": 16,
+  "tileheight": 16,
+  "tilecount": 1526,
+  "columns": 32,
+  "margin": 0,
+  "spacing": 0,
+  "image": "ground.png",
+  "imagewidth": 512,
+  "imageheight": 768
+}
