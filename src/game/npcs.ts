@@ -47,4 +47,5 @@ export const isNpcId = (id: string): id is NpcId => id in NPCS;
 export const WORLD_BASE = `${import.meta.env.BASE_URL}assets/world/`;
 
 /** Portrait strip URL for React UI (relative, so it works with Vite's `base: './'`). */
-export const npcPortraitUrl = (id: NpcId) => `${WORLD_BASE}sprites/${NPCS[id].sprite}.png`;
+export const spriteUrl = (sprite: string) => `${WORLD_BASE}sprites/${sprite}.png`;
+export const npcPortraitUrl = (id: NpcId) => spriteUrl(NPCS[id].sprite);

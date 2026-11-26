@@ -1,11 +1,5 @@
 import React from 'react';
-
-/** Replace with your contact details and social profile URLs */
-const CONTACTS = [
-  { platform: 'EMAIL', icon: '@', label: 'raissabilullah@gmail.com', url: 'mailto:raissabilullah@gmail.com' },
-  { platform: 'LINKEDIN', icon: 'in', label: 'Muhammad Rais Sabilullah', url: 'https://www.linkedin.com/in/muhammad-rais-sabilullah/' },
-  { platform: 'GITHUB', icon: 'GH', label: 'raissuror', url: 'https://github.com/raissuror' },
-];
+import { CONTACTS } from '../../content/contacts';
 
 export const ContactContent: React.FC = () => (
   <div className="game-modal-body">

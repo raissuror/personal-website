@@ -4,11 +4,14 @@ A Pokémon-style interactive portfolio website built with React, TypeScript, and
 
 ## ✨ Features
 
-- **Interactive Game World**: Explore a tile-based world with your character
-- **NPC Interactions**: Talk to different NPCs to learn about skills, projects, and contact info
-- **Responsive Design**: Works on both desktop and mobile devices
-- **Modern UI**: Clean, pixel-art inspired interface with Tailwind CSS
-- **Smooth Controls**: WASD or arrow keys for movement, Space/Enter for interactions
+- **Walk-and-talk portfolio**: a snowy pixel-art camp; four locals each hold one section
+- **Project landmarks**: each project has its own spot in the camp (glowing ◆ markers)
+- **Secrets**: three hidden things to find, counted in the HUD and the finish card
+- **Living camp**: falling snow, footprints, day / dusk / night from the visitor's clock, NPCs that notice you
+- **Sound** (off by default): wind, campfire, footsteps, dialogue blips; all synthesized, no audio files
+- **Summary page**: `?view=summary` shows everything on one scrollable, printable page, without loading the game
+- **Fast first load**: Phaser is split into its own chunk and fetched while the intro card is showing
+- **Link previews**: Open Graph / Twitter tags with `public/og-image.jpg`
 
 ## 🚀 Quick Start
 
@@ -42,15 +45,19 @@ npm run dev
 ### Controls
 - **Move**: WASD or arrow keys (joystick on mobile)
 - **Run**: hold Shift (push the joystick to the edge on mobile)
-- **Talk**: E, Space or Enter when next to an NPC (the **E** button on mobile)
-- **Close a section**: Escape, E, or click outside
+- **Talk / look**: E, Space or Enter when next to something (the **TALK** button on mobile)
+- **Close**: Escape, E, or click outside
+- **Sound on / off**: M, or the ♪ button
 - **F2**: show collision boxes and talk radii (handy after editing the map)
+- **Preview lighting**: add `?time=day`, `?time=dusk` or `?time=night` to the URL
 
 ### Who to find (around the campfire)
 - **Penguin**: About me
 - **Polar Bear**: Skills
 - **Reindeer**: Projects
 - **Snowy Owl**: Contact
+
+Projects: lighthouse (HearthHold), husky sled (Go-Life), notice board (this site), radio tower (React STT and TTS), weather station (Mask Recognition).
 
 ## 🛠️ Tech Stack
 
@@ -63,18 +70,28 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-public/assets/world/        # Everything the game world loads at runtime
-├── maps/outpost.tmj        # The Tiled map (edit this)
-├── tilesets/               # ground.tsj (16px atlas) + props.tsj (image collection)
-├── sprites/                # Player, NPC, animal and prop PNGs
-└── animations.json         # Spritesheet frame size / count / fps per animation
+public/
+├── assets/world/           # Everything the game world loads at runtime
+│   ├── maps/outpost.tmj    # The Tiled map (edit this)
+│   ├── tilesets/           # ground.tsj (16px atlas) + props.tsj (image collection)
+│   ├── sprites/            # Player, NPC, animal and prop PNGs
+│   └── animations.json     # Spritesheet frame size / count / fps per animation
+├── assets/projects/        # Project preview images
+├── og-image.jpg            # Link preview image (1200×630)
+└── favicon.png
 world.tiled-project         # Open this in Tiled
 src/
-├── App.tsx                 # Modal state; pauses the game while a section is open
+├── App.tsx                 # Game vs summary view, modal state, met / found progress
+├── audio/sound.ts          # Synthesized ambience and effects (Web Audio)
+├── content/                # ✏️ Your content: projects, contacts, career, secrets
 ├── components/
-│   ├── GameCanvas.tsx      # Creates the Phaser game, talk prompt, mobile controls
-│   ├── GameUI.tsx          # Controls + "who to find" overlay
-│   ├── ProfileModal.tsx    # Dialogue step → full section
+│   ├── GameCanvas.tsx      # Lazy-loads Phaser, talk prompt, mobile controls
+│   ├── Hud.tsx             # Top-left chip, controls, locals, secrets, sound toggle
+│   ├── WelcomeCard.tsx     # First-visit intro
+│   ├── ProfileModal.tsx    # Dialogue box, section panel, project panel
+│   ├── FieldReport.tsx     # Shown after meeting all four locals
+│   ├── SummaryPage.tsx     # One-page version (?view=summary)
+│   ├── ProjectCard.tsx
 │   └── profile-modal/      # About / Skills / Projects / Contact content
 └── game/
     ├── npcs.ts             # NPC names, sections, sprites and teaser lines
@@ -94,6 +111,9 @@ Open `world.tiled-project` in Tiled, then `public/assets/world/maps/outpost.tmj`
 | Spawns | Point named `player` (the player's feet) |
 | Collision | Rectangles the player can't walk through (hidden in Tiled by default) |
 | NPCs | Points of type `npc` named `about`, `skills`, `projects` or `contact` (the NPC's feet) |
+| Projects | Points named after a project `id` in `src/content/projects.ts`; stand-here spot for that landmark |
+| Secrets | Points named after a secret `id` in `src/content/secrets.ts` (`bottle` also draws the bottle) |
+| Trail | Points in walking order; one signpost per entry in `src/content/career.ts` |
 
 Moving a prop does **not** move its collision rectangle. Move both together. Only rectangle colliders are supported.
 
@@ -101,30 +121,19 @@ Moving a prop does **not** move its collision rectangle. Move both together. Onl
 
 - **NPC text, names and sprites**: `src/game/npcs.ts`
 - **Section content**: `src/components/profile-modal/*Content.tsx`
+- **Projects** (text, tech, links, collaborators, image): `src/content/projects.ts`; images go in `public/assets/projects/`
+- **Email and social links**: `src/content/contacts.ts`
+- **Career trail**: `src/content/career.ts` (empty = no trail)
+- **Secrets**: `src/content/secrets.ts`
 - **Add a section**: add an entry to `NPCS` in `npcs.ts`, a content component in `profile-modal/index.ts`, and an `npc` point with that name on the map's `NPCs` layer.
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+The site is a static build (`npm run build` → `dist/`), deployed on Cloudflare Pages.
 
-1. Install Vercel CLI:
-```bash
-npm i -g vercel
-```
-
-2. Deploy:
-```bash
-vercel
-```
-
-### Netlify
-
-1. Build the project:
-```bash
-npm run build
-```
-
-2. Upload the `dist/` folder to Netlify
+**Link previews** need absolute URLs. Production builds read `SITE_URL` from `.env.production`
+(currently `https://raissabilullah.my.id`); a `SITE_URL` set in the Pages build settings overrides
+it. Dev builds fall back to Cloudflare's `CF_PAGES_URL` or relative paths.
 
 ## 🔧 Development
 
@@ -137,9 +146,9 @@ npm run build
 
 ### Adding New Features
 
-1. **New Game Mechanics**: Extend the `GameScene` class
+1. **New Game Mechanics**: Extend the `WorldScene` class
 2. **UI Components**: Create new React components in `components/`
-3. **Profile Content**: Update the modal content in `ProfileModal.tsx`
+3. **Profile Content**: Edit `src/content/` and `src/components/profile-modal/`
 
 ## 📝 License
 

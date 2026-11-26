@@ -6,10 +6,11 @@ import { NpcPortrait } from './NpcPortrait';
 interface WelcomeCardProps {
   onStart: () => void;
   onOpenSection: (id: NpcId) => void;
+  onShowSummary: () => void;
 }
 
 /** First-visit card: who this is, how to play, and a shortcut for visitors who'd rather not walk. */
-export function WelcomeCard({ onStart, onOpenSection }: WelcomeCardProps) {
+export function WelcomeCard({ onStart, onOpenSection, onShowSummary }: WelcomeCardProps) {
   const touch = useTouchControls();
   const startRef = useRef<HTMLButtonElement>(null);
 
@@ -66,7 +67,11 @@ export function WelcomeCard({ onStart, onOpenSection }: WelcomeCardProps) {
         </button>
 
         <div className="welcome-skip">
-          No time to walk? Jump straight to:
+          No time to walk?{' '}
+          <button type="button" className="welcome-summary-link" onClick={onShowSummary}>
+            Read everything on one page
+          </button>{' '}
+          or jump straight to:
           <div className="welcome-skip-links">
             {NPC_ORDER.map((id) => (
               <button key={id} type="button" className="px-btn px-btn--sm" onClick={() => onOpenSection(id)}>
