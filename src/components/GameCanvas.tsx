@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Phaser from 'phaser';
-import { WorldScene } from '../game/WorldScene';
-import { GameEvent, RegistryKey } from '../game/bridge';
-import { NPCS, type NpcId } from '../game/npcs';
+import type Phaser from 'phaser';
+import { GameEvent, RegistryKey, type SpotRef } from '../game/bridge';
 import { loadWorld } from '../game/world';
+import { describeSpot } from '../content/spots';
 import { MobileControls } from './MobileControls';
 import { useTouchControls } from '../hooks/useTouchControls';
 
 interface GameCanvasProps {
-  /** Called when the player talks to an NPC. */
-  onTalk: (id: NpcId) => void;
+  /** Called when the player interacts with an NPC, project, secret or signpost. */
+  onTalk: (spot: SpotRef) => void;
   /** Freeze the game and release the keyboard (e.g. while a modal is open). */
   paused: boolean;
 }
@@ -20,7 +19,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({ onTalk, paused }) => {
   const onTalkRef = useRef(onTalk);
   const pausedRef = useRef(paused);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [nearby, setNearby] = useState<NpcId | null>(null);
+  const [nearby, setNearby] = useState<SpotRef | null>(null);
   const touch = useTouchControls();
 
   useEffect(() => {
@@ -38,8 +37,10 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({ onTalk, paused }) => {
     let cancelled = false;
     let game: Phaser.Game | null = null;
 
-    loadWorld()
-      .then((world) => {
+    // Phaser is the bulk of the download, so it's split out and fetched alongside the map
+    // while the intro card is already on screen.
+    Promise.all([import('phaser'), import('../game/WorldScene'), loadWorld()])
+      .then(([{ default: Phaser }, { WorldScene }, world]) => {
         if (cancelled) return;
         game = new Phaser.Game({
           type: Phaser.AUTO,
@@ -48,16 +49,19 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({ onTalk, paused }) => {
           pixelArt: true,
           roundPixels: true,
           audio: { noAudio: true },
+          banner: false,
           physics: { default: 'arcade', arcade: { gravity: { x: 0, y: 0 }, debug: false } },
           scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth, height: parent.clientHeight },
         });
         game.registry.set(RegistryKey.WORLD, world);
         game.registry.set(RegistryKey.PAUSED, pausedRef.current);
         game.events.on(GameEvent.READY, () => setStatus('ready'));
-        game.events.on(GameEvent.NEARBY, (id: NpcId | null) => setNearby(id));
-        game.events.on(GameEvent.TALK, (id: NpcId) => onTalkRef.current(id));
+        game.events.on(GameEvent.NEARBY, (spot: SpotRef | null) => setNearby(spot));
+        game.events.on(GameEvent.TALK, (spot: SpotRef) => onTalkRef.current(spot));
         game.scene.add('World', WorldScene, true);
         gameRef.current = game;
+        // Handy for poking at the scene from the console while developing.
+        if (import.meta.env.DEV) Object.assign(window, { __outpost: game });
       })
       .catch((error) => {
         console.error('Failed to load the world', error);
@@ -79,7 +83,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({ onTalk, paused }) => {
     gameRef.current?.events.emit(GameEvent.VIRTUAL_INTERACT);
   }, []);
 
-  const npc = nearby ? NPCS[nearby] : null;
+  const prompt = nearby ? describeSpot(nearby) : null;
 
   return (
     <div className="game-container relative">
@@ -98,11 +102,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({ onTalk, paused }) => {
         </div>
       )}
 
-      {npc && !paused && (
+      {prompt && !paused && (
         <div className="talk-prompt px-panel" role="status">
           {touch ? <span className="key">TALK</span> : <span className="key">E</span>}
           <span>
-            Talk to <strong>{npc.name}</strong> <span className="talk-prompt-section">· {npc.section}</span>
+            {prompt.verb} <strong>{prompt.name}</strong>{' '}
+            {prompt.detail && <span className="talk-prompt-section">· {prompt.detail}</span>}
           </span>
         </div>
       )}

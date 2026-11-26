@@ -3,13 +3,13 @@ import React from 'react';
 export const AboutContent: React.FC = () => (
   <div className="game-modal-body">
     <p className="game-modal-paragraph">
-      I'm a <span className="game-modal-highlight">product engineer</span> with over <span className="game-modal-highlight">3 years</span> of experience building web applications that support real business operations, particularly in <span className="game-modal-highlight">FMCG, warehouse management, and logistics</span>. I enjoy solving problems through technology and take pride in creating systems that are both <span className="game-modal-highlight">reliable and scalable</span>.
+      I'm a <span className="game-modal-highlight">product engineer</span> at <span className="game-modal-highlight">Biteship</span> in Jakarta, working on <span className="game-modal-highlight">warehouse management (WMS) and operations technology</span>. For 4+ years I've built web applications that run real business operations in <span className="game-modal-highlight">logistics, warehousing and FMCG e-commerce</span>.
     </p>
     <p className="game-modal-paragraph">
-      My technical background includes <span className="game-modal-highlight">JavaScript, PHP, Python, and Java</span>, along with practical experience in <span className="game-modal-highlight">CI/CD and deployment workflows</span>. Lately, I've been investing time in <span className="game-modal-highlight">Artificial Intelligence</span> to broaden my capabilities and prepare for the next wave of software innovation.
+      Day to day that means fulfillment features for <span className="game-modal-highlight">500+ warehouse operators</span>, Node.js APIs behind <span className="game-modal-highlight">20,000+ daily transactions</span>, and digging into PostgreSQL and workflows until things get faster. Improving those workflows cut fulfillment processing time by <span className="game-modal-highlight">40%</span>, and I led our move from DigitalOcean to <span className="game-modal-highlight">AWS</span>.
     </p>
     <p className="game-modal-paragraph">
-      I work well in <span className="game-modal-highlight">team environments</span>, communicate clearly, and believe that <span className="game-modal-highlight">consistent learning</span> is key to long-term growth in this field.
+      Lately I've been building <span className="game-modal-highlight">AI-assisted features</span> such as smart task assignment and route optimization. I like sitting between product and engineering: reading the operational data, finding the bottleneck, then shipping the fix.
     </p>
   </div>
 );

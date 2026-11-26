@@ -5,10 +5,10 @@
 export const GameEvent = {
   /** Scene finished creating the world. */
   READY: 'world-ready',
-  /** Nearest NPC in talking range changed. Payload: NpcId | null. */
-  NEARBY: 'npc-nearby',
-  /** Player talked to an NPC. Payload: NpcId. */
-  TALK: 'npc-talk',
+  /** Nearest interactable in range changed. Payload: SpotRef | null. */
+  NEARBY: 'spot-nearby',
+  /** Player interacted with something. Payload: SpotRef. */
+  TALK: 'spot-talk',
   /** Mobile interact button pressed. */
   VIRTUAL_INTERACT: 'virtual-interact',
 } as const;
@@ -21,3 +21,12 @@ export const RegistryKey = {
   /** { x, y } in -1..1 from the mobile joystick. */
   VIRTUAL_MOVE: 'virtualMove',
 } as const;
+
+/** Things you can walk up to: the four locals, project landmarks, hidden secrets, trail signposts. */
+export type SpotKind = 'npc' | 'project' | 'secret' | 'trail';
+
+export interface SpotRef {
+  kind: SpotKind;
+  /** NpcId, project id, secret id, or the trail stop index as a string. */
+  id: string;
+}

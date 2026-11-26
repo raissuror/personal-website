@@ -8,8 +8,8 @@
  "tilewidth": 16,
  "tileheight": 16,
  "infinite": false,
- "nextlayerid": 9,
- "nextobjectid": 332,
+ "nextlayerid": 12,
+ "nextobjectid": 345,
  "backgroundcolor": "#3c6072",
  "layers": [
   {
@@ -9675,6 +9675,198 @@
      "visible": true
     }
    ]
+  },
+  {
+   "id": 9,
+   "name": "Projects",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "objects": [
+    {
+     "id": 332,
+     "name": "hearthhold",
+     "type": "project",
+     "point": true,
+     "x": 722,
+     "y": 356,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 333,
+     "name": "go-life",
+     "type": "project",
+     "point": true,
+     "x": 344,
+     "y": 694,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 334,
+     "name": "personal-website",
+     "type": "project",
+     "point": true,
+     "x": 503,
+     "y": 346,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 335,
+     "name": "react-stt-and-tts",
+     "type": "project",
+     "point": true,
+     "x": 410,
+     "y": 329,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 336,
+     "name": "mask-recognition",
+     "type": "project",
+     "point": true,
+     "x": 848,
+     "y": 248,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    }
+   ],
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 10,
+   "name": "Secrets",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "objects": [
+    {
+     "id": 337,
+     "name": "fox",
+     "type": "secret",
+     "point": true,
+     "x": 221,
+     "y": 212,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 338,
+     "name": "ice-hole",
+     "type": "secret",
+     "point": true,
+     "x": 156,
+     "y": 330,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 339,
+     "name": "bottle",
+     "type": "secret",
+     "point": true,
+     "x": 772,
+     "y": 700,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    }
+   ],
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 11,
+   "name": "Trail",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "objects": [
+    {
+     "id": 340,
+     "name": "stop-1",
+     "type": "trail",
+     "point": true,
+     "x": 448,
+     "y": 522,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 341,
+     "name": "stop-2",
+     "type": "trail",
+     "point": true,
+     "x": 452,
+     "y": 572,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 342,
+     "name": "stop-3",
+     "type": "trail",
+     "point": true,
+     "x": 490,
+     "y": 612,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 343,
+     "name": "stop-4",
+     "type": "trail",
+     "point": true,
+     "x": 487,
+     "y": 656,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 344,
+     "name": "stop-5",
+     "type": "trail",
+     "point": true,
+     "x": 476,
+     "y": 700,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    }
+   ],
+   "opacity": 1,
+   "visible": true,
+   "x": 0,
+   "y": 0
   }
  ],
  "tilesets": [
